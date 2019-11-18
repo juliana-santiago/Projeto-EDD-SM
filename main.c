@@ -4,7 +4,6 @@
 
 int main()
 {
-
     char opc, opc2;
     setlocale(LC_ALL, "Portuguese");
 
@@ -63,8 +62,8 @@ int main()
             exit(1);
             break;
         default:
-        	printf("\n    Numero Inválido...");
-        	break;
+            printf("\n\n    Opção Invalida...");
+            break;
         }
         fflush(stdin);
         opc = getche();

@@ -46,4 +46,3 @@ PONT buscaSeqOrd(LISTA *l, char *ch);
 TIPOCHAVE oqueExcluir(void);
 TIPOCHAVE oqueBuscar(void);
 REGISTRO oqueInserir(void);
-

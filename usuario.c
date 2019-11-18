@@ -309,8 +309,8 @@ void gerenciarUsuarios()
             main();
             break;
         default:
-        	printf("\n    Numero Inválido...");
-        	break;
+            printf("\n\n    Opção Invalida...");
+            break;
         }
 
         printf("\n    Novo teste? [n/N = NEGATIVO]");
