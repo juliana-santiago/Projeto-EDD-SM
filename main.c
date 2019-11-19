@@ -63,6 +63,7 @@ int main()
             break;
         default:
             printf("\n\n    Opção Invalida...");
+            printf("\n-> Pressione qualquer tecla para VOLTAR...\n");
             break;
         }
         fflush(stdin);

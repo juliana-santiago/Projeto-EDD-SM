@@ -8,6 +8,8 @@ FILE *arq;
 void inicializarLista(LISTA *l)
 {
     l->inicio = NULL;
+
+    carregarLista(l);
 }
 //Definindo o tamanho da Lista
 int tamanhoLista(LISTA *l)
@@ -271,7 +273,6 @@ void gerenciarUsuarios()
         printf("\n 5. Inserir elemento na Lista ligada ");
         printf("\n 6. Excluir elemento da Lista ligada ");
         printf("\n 7. Reinicializa Lista ligada ");
-        printf("\n 8. Carregar Lista");
         printf("\n 0. Menu Principal");
         printf("\n---------------------------------------");
         printf("\n    Escolha: ");
@@ -285,25 +286,27 @@ void gerenciarUsuarios()
             inicializarLista(&lis);
             break;
         case '2':
+            system("cls");
             printf("\n    Tamanho da Lista = %d", tamanhoLista(&lis));
             break;
         case '3':
+            system("cls");
             exibirLista(&lis);
             break;
         case '4':
+            system("cls");
             pesquisaLista(&lis);
             break;
         case '5':
+            system("cls");
             insereNaLista(&lis);
             break;
         case '6':
+            system("cls");
             excluiDaLista(&lis);
             break;
         case '7':
             reinicializarLista(&lis);
-            break;
-        case '8':
-            carregarLista(&lis);
             break;
         case '0':
             main();
@@ -312,7 +315,6 @@ void gerenciarUsuarios()
             printf("\n\n    Opção Invalida...");
             break;
         }
-
         printf("\n    Novo teste? [n/N = NEGATIVO]");
         fflush(stdin);
         opc = getche();

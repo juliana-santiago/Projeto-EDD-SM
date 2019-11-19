@@ -75,7 +75,7 @@ void inicializarPilha(PILHA *p)
     p->topo = NULL;
 }
 //Inicializar gondolas
-void inicializarGondolas(GONDOLA *g)
+void inicializarGondola(GONDOLA *g)
 {
 
     int i;
@@ -85,6 +85,17 @@ void inicializarGondolas(GONDOLA *g)
         inicializarPilha(&g->prateleira[i]);
     }
     carregarGondola(g);
+}
+//Inicializa as pilhas da gondola
+void inicializarProg(GONDOLA *g)
+{
+
+    int i;
+
+    for (i = 0; i < 10; i++)
+    {
+        inicializarPilha(&g->prateleira[i]);
+    }
 }
 //Definindo o tamanho de cada Prateleira
 int tamanhoPilha(PILHA *p)
@@ -101,17 +112,17 @@ int tamanhoPilha(PILHA *p)
 //Verificar se a Gondola esta Vazia
 bool estaVaziaGondola(GONDOLA *g)
 {
-    int i;
+    int i, tam;
     bool retorno = false;
 
     for (i = 0; i < 10; i++)
     {
         PILHA *p = &g->prateleira[i];
-        if (p != NULL)
-            if (tamanhoPilha(p) != 0)
-            {
-                retorno = true;
-            }
+        tam = tamanhoPilha(p);
+        if (tam != 0)
+        {
+            retorno = true;
+        }
     }
     return retorno;
 }
@@ -313,6 +324,7 @@ void abastecerGondolas()
     GONDOLA gon;
     char opc;
 
+    inicializarProg(&gon);
     inicializarPilha(&car);
 
     do
@@ -338,27 +350,33 @@ void abastecerGondolas()
         switch (opc)
         {
         case '1':
-            inicializarGondolas(&gon);
+            inicializarGondola(&gon);
             break;
         case '2':
+            system("cls");
             exibirQuantGondola(&gon);
             break;
         case '3':
+            system("cls");
             exibirGondola(&gon);
             break;
         case '4':
+            system("cls");
             if (estaVaziaGondola(&gon) == false)
-                printf("\n\n   Gondola SEM itens");
+                printf("\n\n    Gondola SEM itens");
             else
                 printf("\n\n    Gondola COM Itens");
             break;
         case '5':
+            system("cls");
             insereNaGondola(&gon);
             break;
         case '6':
+            system("cls");
             excluirDaGondola(&gon, &car);
             break;
         case '7':
+            system("cls");
             exibirCarrinho(&car);
             break;
         case '8':
