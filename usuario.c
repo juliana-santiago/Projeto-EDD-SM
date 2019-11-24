@@ -44,7 +44,7 @@ PONT buscaSeqOrd(LISTA *l, REGISTRO *ch)
 {
     PONT pos = l->inicio;
     char *prontuario = ch->prontuario;
-    while (pos != NULL && (strcmp(pos->reg.prontuario, prontuario) != 1))
+    while (pos != NULL && (strcmp(pos->reg.prontuario, prontuario) < 0))
         pos = pos->prox;
     if (pos != NULL && (strcmp(pos->reg.prontuario, prontuario) == 0))
         return pos;
@@ -54,8 +54,10 @@ PONT buscaSeqOrd(LISTA *l, REGISTRO *ch)
 bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
 {
     char *ch = reg.prontuario;
-    PONT ant, i;
+    char *user = reg.nomeUsuario;
+    PONT ant,j, i;
     i = buscaSequencialExc(l, ch, &ant);
+    j = buscaSequencialNome(l, user, &ant);
     if (i != NULL)
         return false;
     i = (PONT)malloc(sizeof(ELEMENTO));
@@ -72,13 +74,27 @@ bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
     }
     return true;
 }
+//Executando a Busca Sequencial para Organizar os Elementos
+PONT buscaSequencialNome(LISTA *l, char *user, PONT *ant)
+{
+    *ant = NULL;
+    PONT atual = l->inicio;
+    while ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, user)< 0))
+    {
+        *ant = atual;
+        atual = atual->prox;
+    }
+    if ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, user) == 0))
+        return atual;
+    return NULL;
+}
 
 //Executando a Busca Sequencial para Excluir um Elemento
 PONT buscaSequencialExc(LISTA *l, char *ch, PONT *ant)
 {
     *ant = NULL;
     PONT atual = l->inicio;
-    while ((atual != NULL) && (strcmp(atual->reg.prontuario, ch) != 1))
+    while ((atual != NULL) && (strcmp(atual->reg.prontuario, ch) < 1))
     {
         *ant = atual;
         atual = atual->prox;
@@ -157,9 +173,10 @@ void insereNaLista(LISTA *l)
 
     printf("\nVai inserir o usuario [%s] [%s]", elem.prontuario, elem.nomeUsuario);
     getch();
-    if (inserirElemListaOrd(l, elem) == true) {
-    	printf("\n O prontuario [%s] foi inserido com sucesso.", elem.prontuario);
-	}
+    if (inserirElemListaOrd(l, elem) == true)
+    {
+        printf("\n O prontuario [%s] foi inserido com sucesso.", elem.prontuario);
+    }
     else
         printf("\n O prontuario [%s] NAO foi inserida!", elem.prontuario);
 }
@@ -201,7 +218,7 @@ int part(REGISTRO vetor[], int ini, int pivo)
     int i, p_maior = ini;
     for (i = ini; i < pivo; i++)
     {
-        if (strcmp(vetor[i].nomeUsuario, vetor[pivo].nomeUsuario) < 0)
+        if (strcmp(vetor[i].prontuario, vetor[pivo].prontuario) < 0)
         {
             TROCA(vetor, i, p_maior);
             p_maior++;
@@ -225,20 +242,30 @@ void quick_sort(REGISTRO *vet_registros, int ini, int fim)
 
 void carregarLista(LISTA *l)
 {
-	reinicializarLista(l);
+    reinicializarLista(l);
     int nroDeRegistros, flag_legrava;
     arq = fopen("usuarios.dat", "r");
+
+    if (arq == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
+    }
+
     fseek(arq, 0L, SEEK_END);
     int size = ftell(arq);
     nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
-	
-    printf("\nTamanho do Arquivo: %d", size);
 
     REGISTRO *vet_registros;
     vet_registros = (REGISTRO *)malloc(nroDeRegistros * sizeof(REGISTRO));
-    
+
     if (vet_registros == NULL)
     {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
         printf("malloc devolveu NULL!\n");
         getch();
         fclose(arq);
@@ -250,17 +277,24 @@ void carregarLista(LISTA *l)
     flag_legrava = fread(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
     if (flag_legrava != 1)
     {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
         printf("\n\nERRO DE LEITURA DO ARQUIVO USUARIOS.DAT");
         getch();
         fclose(arq);
         exit(EXIT_FAILURE);
     }
+
     quick_sort(vet_registros, 0, nroDeRegistros - 1);
     fclose(arq);
     arq = fopen("usuarios.dat", "w");
     flag_legrava = fwrite(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
     if (flag_legrava != 1)
     {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
         printf("\n\nERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
         getch();
         fclose(arq);
@@ -268,35 +302,40 @@ void carregarLista(LISTA *l)
     }
     fclose(arq);
     int ac = 0;
-    
-	for(; ac < nroDeRegistros; ac ++) {
-		inserirElemListaOrd(l, vet_registros[ac]);
-	}
+
+    for (; ac < nroDeRegistros; ac++)
+    {
+        inserirElemListaOrd(l, vet_registros[ac]);
+    }
 }
 
-REGISTRO* listaArray(LISTA *l) {
-	int nroDeRegistros, cont = 0;
-	nroDeRegistros = tamanhoLista(l);
-	REGISTRO vet[nroDeRegistros];
+REGISTRO *listaArray(LISTA *l)
+{
+    int nroDeRegistros, cont = 0;
+    nroDeRegistros = tamanhoLista(l);
+    REGISTRO vet[nroDeRegistros];
     PONT end = l->inicio;
     system("cls");
-    printf("Lista: \n ");
     while (end != NULL)
     {
         vet[cont] = end->reg;
         cont++;
         end = end->prox;
     }
-    return &vet;
-} 
+    return vet;
+}
 
-int salvaArquivo(LISTA *l) {
-	int flag_legrava;
-	REGISTRO* vet = listaArray(l);
-	arq = fopen("usuarios.dat", "w");
-	flag_legrava = fwrite(vet, tamanhoLista(l) * sizeof(REGISTRO), 1, arq);
+int salvaArquivo(LISTA *l)
+{
+    int flag_legrava;
+    REGISTRO *vet = listaArray(l);
+    arq = fopen("usuarios.dat", "w");
+    flag_legrava = fwrite(vet, tamanhoLista(l) * sizeof(REGISTRO), 1, arq);
     if (flag_legrava != 1)
     {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
         printf("\n\nERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
         getch();
         fclose(arq);
@@ -310,23 +349,21 @@ void gerenciarUsuarios()
 {
     LISTA lis;
     char opc;
-
     inicializarLista(&lis);
     carregarLista(&lis);
-
     do
     {
-        system("color f5");
+        system("color 3F");
         system("cls");
         printf("\n       GERENCIAR USÚARIOS:  ");
         printf("\n---------------------------------------");
-        printf("\n 1. Exibir tamanho da Lista ligada");
-        printf("\n 2. Exibir Lista ligada           ");
-        printf("\n 3. Fazer busca na Lista ligada   ");
-        printf("\n 4. Inserir elemento na Lista ligada ");
-        printf("\n 5. Excluir elemento da Lista ligada ");
-        printf("\n 6. Reinicializa Lista ligada ");
-        printf("\n 7. Busca por prontuario ");
+        printf("\n 1. Exibir tamanho da Lista");
+        printf("\n 2. Exibir Lista");
+        printf("\n 3. Buscar por Prontuario");
+        printf("\n 4. Inserir elemento na Lista");
+        printf("\n 5. Excluir elemento da Lista");
+        printf("\n 6. Reinicializa Lista");
+        printf("\n 7. Salvar Alterações no Arquivo");
         printf("\n 0. Menu Principal");
         printf("\n---------------------------------------");
         printf("\n    Escolha: ");
@@ -352,27 +389,19 @@ void gerenciarUsuarios()
         case '4':
             system("cls");
             insereNaLista(&lis);
-            salvaArquivo(&lis);
             break;
         case '5':
             system("cls");
             excluiDaLista(&lis);
-            salvaArquivo(&lis);
             break;
         case '6':
             reinicializarLista(&lis);
             break;
         case '7':
-        	
-        	fflush(stdin);
-    		gets(&aaa);
-    		REGISTRO* vetor = listaArray(&lis);
-    		int tamanho;
-    		tamanho = tamanhoLista(&lis);
-        	printf("%d", buscaBinaria(vetor, tamanho, &aaa));
-        	break;
+            salvaArquivo(&lis);
+            break;
         case '0':
-            main();
+            menuPrincipal();
             break;
         default:
             printf("\n\n    Opção Invalida...");
@@ -384,20 +413,93 @@ void gerenciarUsuarios()
     } while (opc != 'N' && opc != 'n');
 }
 
-int buscaBinaria (REGISTRO *vetor, int tamanho_vet,  char* pronturario) {
+int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *usuario)
+{
 
-    int inicio=0, fim=tamanho_vet-1, meio;
+    int inicio = 0, fim = tamanho_vet - 1, meio;
 
-    while(inicio<=fim){
-        meio = (inicio+fim)/2;
-            if(strcmp(vetor[meio].prontuario, pronturario) == 0)
-                return meio;
-            if(strcmp(vetor[meio].prontuario, pronturario) > 0)
-                fim = meio - 1;
-            else
-                inicio=meio+1;
+    while (inicio <= fim)
+    {
+        meio = (inicio + fim) / 2;
+        if (strcmp(vetor[meio].prontuario, usuario) == 0)
+            return meio;
+        if (strcmp(vetor[meio].prontuario, usuario) > 0)
+            fim = meio - 1;
+        else
+            inicio = meio + 1;
     }
     return -1;
+}
+
+void login()
+{
+
+    system("color 9F");
+    REGISTRO usuario;
+
+    arq = fopen("usuarios.dat", "r");
+
+    if (arq == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
+        exit(EXIT_FAILURE);
+    }
+    else
+
+        fseek(arq, 0L, SEEK_END);
+    int size = ftell(arq), nroDeRegistros, flag_legrava;
+    nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
+
+    REGISTRO *vet_registros;
+    vet_registros = (REGISTRO *)malloc(nroDeRegistros * sizeof(REGISTRO));
+
+    if (vet_registros == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tmalloc devolveu NULL!\n\n");
+        getch();
+        fclose(arq);
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(arq, 0, SEEK_SET);
+
+    flag_legrava = fread(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
+    if (flag_legrava != 1)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tERRO DE LEITURA DO ARQUIVO USUARIOS.DAT\n\n");
+        getch();
+        fclose(arq);
+        exit(EXIT_FAILURE);
+    }
+    quick_sort(vet_registros, 0, nroDeRegistros - 1);
+    fclose(arq);
+
+    printf("\nNOME DO USUARIO:");
+    fflush(stdin);
+    gets(usuario.nomeUsuario);
+    printf("\nPRONTUARIO DO USUARIO:");
+    fflush(stdin);
+    gets(usuario.prontuario);
+
+    int pos = buscaBinaria(vet_registros, nroDeRegistros, usuario.prontuario);
+    if (pos == -1)
+    {
+        if (strcmp(vet_registros[pos].nomeUsuario, usuario.nomeUsuario) != 0)
+            system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color c0");
+        printf("\n\n\tUSUÁRIO E/OU PRONTUÁRIO INVÁLIDO!\n\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void cadastro_default(void)

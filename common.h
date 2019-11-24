@@ -13,3 +13,4 @@
 
 //Definição do tipo booleano
 typedef int bool;
+

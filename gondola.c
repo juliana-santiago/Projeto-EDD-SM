@@ -146,7 +146,7 @@ void exibirGondola(GONDOLA *g)
 //Exibindo a Pilha
 void exibirPilha(PILHA *p)
 {
-    int i, j,k;
+    int i, j, k;
     POINT end = p->topo;
 
     while (end != NULL)
@@ -170,10 +170,9 @@ void exibirPilha(PILHA *p)
             }
             printf("%c", end->regprod.DESC[i]);
         }
-        
+
         printf(" - %s - %s\n", end->regprod.PESO, end->regprod.PRECO);
-        
- 
+
         end = end->PROX;
     }
 }
@@ -279,9 +278,9 @@ void excluirDaPilha(PILHA *p, PILHA *car)
 {
     REGISTROPROD regExcluido;
     if (inserirNoCarrinho(p, car, &regExcluido) == true)
-        printf("\n    Produto [%d][%s][%s][%s][%s] inserido no carrinho com sucesso.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO,regExcluido.PRECO);
+        printf("\n    Produto [%d][%s][%s][%s][%s] inserido no carrinho com sucesso.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO, regExcluido.PRECO);
     else
-        printf("\n    Nao foi possivel inserir o item  [%d][%s][%s][%s][%s] no carrinho.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO,regExcluido.PRECO);
+        printf("\n    Nao foi possivel inserir o item  [%d][%s][%s][%s][%s] no carrinho.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO, regExcluido.PRECO);
 }
 // Carrega o arquivo dat
 void carregarGondola(GONDOLA *g)
@@ -356,8 +355,8 @@ void abastecerGondolas()
 
     do
     {
-        system("color f5");
         system("cls");
+        system("color 3F");
         printf("\n       ABASTECER GÔNDOLAS    ");
         printf("\n---------------------------------------");
         printf("\n 1. Exibir Quantidade de Itens por Prateleira    ");
@@ -367,6 +366,7 @@ void abastecerGondolas()
         printf("\n 5. Retirar elemento da Pilha e Inseri-lo no Carrinho");
         printf("\n 6. Visualizar Itens no Carrinho");
         printf("\n 7. Reinicializa Pilha");
+        printf("\n 8. Salvar Alteraçoes no Arquivo");
         printf("\n 0. Menu Principal");
         printf("\n---------------------------------------");
         printf("\n    Escolha: ");
@@ -406,8 +406,10 @@ void abastecerGondolas()
             reinicializarGondola(&gon);
             reinicializarCarrinho(&car);
             break;
+        case '8':
+            salvaArquivo(&gon);
         case '0':
-            main();
+            menuPrincipal();
             break;
         default:
             printf("\n\n    Opção Inválida...");
