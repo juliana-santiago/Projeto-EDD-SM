@@ -1,15 +1,13 @@
 //Bibliotecas
 #include "common.h"
 
-//Definição do tipo chave
-typedef int TIPOCHAVE;
-
 //Definição do registro de usuarios
+typedef char TIPOCHAVE;
+
 typedef struct
 {
-    TIPOCHAVE chave;
-    char nomeUsuario[100 + 1];
-    char prontuario[10 + 1];
+    char nomeUsuario[100];
+    char prontuario[10];
 } REGISTRO;
 
 typedef struct aux
@@ -34,15 +32,18 @@ void pesquisaLista(LISTA *l);
 void insereNaLista(LISTA *l);
 void excluiDaLista(LISTA *l);
 void carregarLista(LISTA *l);
+void cadastro_default();
 int tamanhoLista(LISTA *l);
 bool inserirElemListaOrd(LISTA *l, REGISTRO reg);
-bool excluirElemLista(LISTA *l, TIPOCHAVE tch);
-char *replace(char *, char, char);
-
-PONT buscaSequencialExc(LISTA *l, TIPOCHAVE tch, PONT *ant);
-PONT buscaSequencialOrg(LISTA *l, char *ch, PONT *ant);
-PONT buscaSeqOrdNum(LISTA *l, TIPOCHAVE tch);
-PONT buscaSeqOrd(LISTA *l, char *ch);
-TIPOCHAVE oqueExcluir(void);
-TIPOCHAVE oqueBuscar(void);
+bool excluirElemLista(LISTA *l, char *ch);
+void cadastro_default(void);
+int salvaArquivo(LISTA *l);
+int buscaBinaria (REGISTRO *vetor, int tamanho_vet,  char* pronturario);
+PONT buscaSequencialExc(LISTA *l, char *ch, PONT *ant);
+PONT buscaSequencialOrg(LISTA *l, char *us, PONT *ant);
+PONT buscaSeqOrdNum(LISTA *l, REGISTRO *ch);
+PONT buscaSeqOrd(LISTA *l, REGISTRO *ch);
+REGISTRO oqueExcluir(void);
+REGISTRO oqueBuscar(void);
 REGISTRO oqueInserir(void);
+

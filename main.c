@@ -6,7 +6,7 @@ int main()
 {
     char opc, opc2;
     setlocale(LC_ALL, "Portuguese");
-
+	//cadastro_default();
     do
     {
         system("color f5");

@@ -146,7 +146,7 @@ void exibirGondola(GONDOLA *g)
 //Exibindo a Pilha
 void exibirPilha(PILHA *p)
 {
-    int j;
+    int i, j,k;
     POINT end = p->topo;
 
     while (end != NULL)
@@ -161,7 +161,19 @@ void exibirPilha(PILHA *p)
             }
             printf("%c", end->regprod.NOMEPROD[j]);
         }
-        printf(" - %s\n", end->regprod.DATAVENC);
+        printf(" - ");
+        for (i = 0; i < strlen(end->regprod.DESC); i++)
+        {
+            if (end->regprod.DESC[i] == '_')
+            {
+                end->regprod.DESC[i] = ' ';
+            }
+            printf("%c", end->regprod.DESC[i]);
+        }
+        
+        printf(" - %s - %s\n", end->regprod.PESO, end->regprod.PRECO);
+        
+ 
         end = end->PROX;
     }
 }
@@ -241,9 +253,15 @@ REGISTROPROD oqueInserirPilha()
     printf("\n    NOME DO PRODUTO  : ");
     fflush(stdin);
     gets(rp.NOMEPROD);
-    printf("\n    DATA DE VALIDADE : ");
+    printf("\n    DESCRIÇÃO : ");
     fflush(stdin);
-    gets(rp.DATAVENC);
+    gets(rp.DESC);
+    printf("\n    PESO : ");
+    fflush(stdin);
+    gets(rp.PESO);
+    printf("\n    PREÇO : ");
+    fflush(stdin);
+    gets(rp.PRECO);
     return rp;
 }
 //Inserindo elemento na Pilha
@@ -261,15 +279,15 @@ void excluirDaPilha(PILHA *p, PILHA *car)
 {
     REGISTROPROD regExcluido;
     if (inserirNoCarrinho(p, car, &regExcluido) == true)
-        printf("\n    Registro do Produto: [%d][%s][%s] inserido no carrinho com sucesso.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DATAVENC);
+        printf("\n    Produto [%d][%s][%s][%s][%s] inserido no carrinho com sucesso.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO,regExcluido.PRECO);
     else
-        printf("\n    Nao foi possivel inserir este registro no carrinho.");
+        printf("\n    Nao foi possivel inserir o item  [%d][%s][%s][%s][%s] no carrinho.", regExcluido.chave, regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO,regExcluido.PRECO);
 }
 // Carrega o arquivo dat
 void carregarGondola(GONDOLA *g)
 {
 
-    char ch1[150];
+    char ch1[100];
     char *linha1;
     int i = 0, j = 0, quant = 0, prat = 0;
     PILHA *p;
@@ -284,7 +302,7 @@ void carregarGondola(GONDOLA *g)
         exit(EXIT_FAILURE);
     }
 
-    while (fgets(ch1, 150, arq2) != NULL)
+    while (fgets(ch1, 100, arq2) != NULL)
     {
         linha1 = strtok(ch1, " ");
         printf(" ", linha1);
@@ -300,7 +318,15 @@ void carregarGondola(GONDOLA *g)
             }
             if (j == 2)
             {
-                strncpy(rp.DATAVENC, linha1, strlen(linha1) - 1);
+                strcpy(rp.DESC, linha1);
+            }
+            if (j == 3)
+            {
+                strcpy(rp.PESO, linha1);
+            }
+            if (j == 4)
+            {
+                strcpy(rp.PRECO, linha1);
             }
             linha1 = strtok(NULL, " ");
             j++;
@@ -326,6 +352,7 @@ void abastecerGondolas()
 
     inicializarProg(&gon);
     inicializarPilha(&car);
+    inicializarGondola(&gon);
 
     do
     {
@@ -333,14 +360,13 @@ void abastecerGondolas()
         system("cls");
         printf("\n       ABASTECER GÔNDOLAS    ");
         printf("\n---------------------------------------");
-        printf("\n 1. Inicializar Gondola               ");
-        printf("\n 2. Exibir Quantidade de Itens por Prateleira    ");
-        printf("\n 3. Exibir Itens por Prateleira       ");
-        printf("\n 4. Verificar se a pilha esta vazia ");
-        printf("\n 5. Inserir elemento na Pilha");
-        printf("\n 6. Retirar elemento da Pilha e Inseri-lo no Carrinho");
-        printf("\n 7. Visualizar Itens no Carrinho");
-        printf("\n 8. Reinicializa Pilha");
+        printf("\n 1. Exibir Quantidade de Itens por Prateleira    ");
+        printf("\n 2. Exibir Itens por Prateleira       ");
+        printf("\n 3. Verificar se a pilha esta vazia ");
+        printf("\n 4. Inserir elemento na Pilha");
+        printf("\n 5. Retirar elemento da Pilha e Inseri-lo no Carrinho");
+        printf("\n 6. Visualizar Itens no Carrinho");
+        printf("\n 7. Reinicializa Pilha");
         printf("\n 0. Menu Principal");
         printf("\n---------------------------------------");
         printf("\n    Escolha: ");
@@ -350,36 +376,33 @@ void abastecerGondolas()
         switch (opc)
         {
         case '1':
-            inicializarGondola(&gon);
-            break;
-        case '2':
             system("cls");
             exibirQuantGondola(&gon);
             break;
-        case '3':
+        case '2':
             system("cls");
             exibirGondola(&gon);
             break;
-        case '4':
+        case '3':
             system("cls");
             if (estaVaziaGondola(&gon) == false)
                 printf("\n\n    Gondola SEM itens");
             else
                 printf("\n\n    Gondola COM Itens");
             break;
-        case '5':
+        case '4':
             system("cls");
             insereNaGondola(&gon);
             break;
-        case '6':
+        case '5':
             system("cls");
             excluirDaGondola(&gon, &car);
             break;
-        case '7':
+        case '6':
             system("cls");
             exibirCarrinho(&car);
             break;
-        case '8':
+        case '7':
             reinicializarGondola(&gon);
             reinicializarCarrinho(&car);
             break;

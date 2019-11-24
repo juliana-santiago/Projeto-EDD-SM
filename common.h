@@ -6,7 +6,6 @@
 #include <locale.h>
 
 //Constantes pré-definidas
-#define MAX 2
 #define INVALIDO -1
 
 #define false - 1

@@ -9,7 +9,9 @@ typedef struct
 {
     TIPOCHAVEPROD chave;
     char NOMEPROD[100 + 1];
-    char DATAVENC[10 + 1];
+    char DESC[100 + 1];
+    char PESO[10+ 1];
+    char PRECO[10+ 1];
 } REGISTROPROD;
 
 typedef struct prod
