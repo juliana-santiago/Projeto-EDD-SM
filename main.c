@@ -21,7 +21,7 @@ int menuPrincipal()
     inicializarLista(&lis);
     inicializarGondola(&gon);
     carregaGondula(&gon);
-    //produtoDefault(&gon);
+    produtoDefault(&gon);
     //cadastroDefault();
     char opc, opc2;
 

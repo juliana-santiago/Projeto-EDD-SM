@@ -503,10 +503,10 @@ void produtoDefault(GONDOLA *g)
 	
 	PILHA *p;
 	int i, j = 0;
-	for (i = 0; i < 30; i++)
+	for (i = 1; i < 31; i++)
 	{
 	    p = &g->prateleira[j];
-	    inserirElemPilha(p, tab[i]);
+	    inserirElemPilha(p, tab[i-1]);
 	    if (i % 5 == 0)
 	    {
 	        j++;
