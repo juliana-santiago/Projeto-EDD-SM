@@ -1,26 +1,22 @@
 //Bibliotecas
 #include "common.h"
 
-//Definição do tipo chave
-typedef int TIPOCHAVEPROD;
-
-//Definição do registro de produtos
+//Defini??o do registro de produtos
 typedef struct
 {
-    TIPOCHAVEPROD chave;
-    char NOMEPROD[100 + 1];
-    char DESC[100 + 1];
-    char PESO[10 + 1];
-    char PRECO[10 + 1];
-} REGISTROPROD;
+    char NOMEPROD[100];
+    char DESC[100];
+    char PESO[10];
+    char PRECO[10];
+} PRODUTO;
 
 typedef struct prod
 {
-    REGISTROPROD regprod;
+    PRODUTO regprod;
     struct prod *PROX;
-} ELEMENTOPROD;
+} ELEMPROD;
 
-typedef ELEMENTOPROD *POINT;
+typedef ELEMPROD *POINT;
 
 typedef struct
 {
@@ -32,27 +28,28 @@ typedef struct
     PILHA prateleira[10];
 } GONDOLA;
 
-//Funçoes Pilha
-void abastecerGondolas();
-void inicializarPilha(PILHA *p);
-void exibirPilha(PILHA *p);
-void reinicializarPilha(PILHA *p);
-void insereNaPilha(PILHA *p);
-void insereNaGondola(GONDOLA *g);
-void excluirDaPilha(PILHA *p, PILHA *car);
-void excluirDaGondola(GONDOLA *g, PILHA *car);
-void carregarPilha(PILHA *p);
-void carregarGondola(GONDOLA *g);
-void exibirCarrinho(PILHA *p);
-void inicializarGondola(GONDOLA *g);
-void inicializarProg(GONDOLA *g);
-void exibirGondola(GONDOLA *g);
-int tamanhoPilha(PILHA *p);
-bool inserirNoCarrinho(PILHA *p, PILHA *car, REGISTROPROD *regprod);
-bool inserirElemPilha(PILHA *p, REGISTROPROD regprod);
-bool excluirElemPilha(PILHA *p, REGISTROPROD *regprod);
-bool estaVaziaPilha(PILHA *p);
-bool estaVaziaGondola(GONDOLA *g);
-void exibirQuantGondola(GONDOLA *g);
-
-REGISTROPROD oqueInserirPilha(void);
+int tamanhoPilha(PILHA *);
+void inicializarPilha(PILHA *);
+void inicializarGondola(GONDOLA *);
+bool pilhaVazia(PILHA *);
+void gondolaVazia(GONDOLA *);
+void insereNaGondola(GONDOLA *);
+void insereNaPilha(PILHA *);
+PRODUTO oqueInserirPilha();
+bool inserirElemPilha(PILHA *, PRODUTO );
+void exibirQuantGondola(GONDOLA *);
+void excluirDaPilha(PILHA *, PILHA *);
+bool inserirNoCarrinho(PILHA *, PILHA *, PRODUTO *);
+bool excluirElemPilha(PILHA *, PRODUTO *);
+void exibirPilha(PILHA *);
+void exibirGondola(GONDOLA *);
+void excluirDaGondola(GONDOLA *, PILHA *);
+bool inserirNoCarrinho(PILHA *, PILHA *, PRODUTO *);
+void exibirCarrinho(PILHA *);
+void reinicializarGondola(GONDOLA *);
+void reinicializarPilha(PILHA *);
+void salvarArquivoProd(PILHA *, char *);
+PRODUTO * convertPilhaToArray(PILHA *);
+PRODUTO * lerArquivoPilha(char * );
+void salvarGondola(GONDOLA *);
+void carregaGondula(GONDOLA *);

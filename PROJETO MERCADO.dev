@@ -1,6 +1,6 @@
 [Project]
-FileName=Projeto.dev
-Name=Projeto
+FileName=PROJETO MERCADO.dev
+Name=PROJETO MERCADO
 Type=1
 Ver=2
 ObjFiles=
@@ -50,7 +50,7 @@ ProductVersion=
 AutoIncBuildNr=0
 SyncProduct=1
 
-[Unit1]
+[Unit2]
 FileName=main.c
 CompileCpp=0
 Folder=
@@ -60,18 +60,8 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit2]
-FileName=common.h
-CompileCpp=0
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit3]
-FileName=usuario.c
+FileName=common.h
 CompileCpp=0
 Folder=
 Compile=1
@@ -91,7 +81,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit5]
-FileName=gondola.c
+FileName=usuario.c
 CompileCpp=0
 Folder=
 Compile=1
@@ -102,6 +92,16 @@ BuildCmd=
 
 [Unit6]
 FileName=gondola.h
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit1]
+FileName=gondola.c
 CompileCpp=0
 Folder=
 Compile=1

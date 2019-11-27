@@ -1,63 +1,242 @@
-//Biblioteca
+#include "common.h"
 #include "usuario.h"
 
-//Variavel Global
-FILE *arq;
-REGISTRO R;
-
-//Inicializando a Lista
-void inicializarLista(LISTA *l)
+void gerenciarUsuarios(LISTA *lis)
 {
-    l->inicio = NULL;
-
-    carregarLista(l);
-}
-//Definindo o tamanho da Lista
-int tamanhoLista(LISTA *l)
-{
-    PONT end = l->inicio;
-    int taml = 0;
-    while (end != NULL)
+    char opc;
+    do
     {
-        taml++;
-        end = end->prox;
-    }
-    return taml;
-}
-void exibirLista(LISTA *l)
-{
-    int cont = 0;
-    PONT end = l->inicio;
-    system("cls");
-    printf("Lista: \n ");
-    while (end != NULL)
-    {
-        cont++;
-        printf("\n%02d\t%-10s\t\t%-50s", cont, end->reg.prontuario, end->reg.nomeUsuario);
-        end = end->prox;
-    }
-    printf("\n");
+        system("color 3F");
+        system("cls");
+        printf("\n\t______________________________________");
+        printf("\n\t|         GERENCIAR USUARIOS:        |");
+        printf("\n\t|====================================|");
+        printf("\n\t| 1. Exibir tamanho da Lista         |");
+        printf("\n\t| 2. Exibir Lista                    |");
+        printf("\n\t| 3. Buscar por Prontuário na Lista  |");
+        printf("\n\t| 4. Inserir elemento na Lista       |");
+        printf("\n\t| 5. Excluir elemento da Lista       |");
+        printf("\n\t| 6. Reinicializa Lista              |");
+        printf("\n\t| 7. Salvar Alterações no Arquivo    |");
+        printf("\n\t| 0. Menu Principal                  |");
+        printf("\n\t|____________________________________|");
+        printf("\n\t Escolha: ");
+        fflush(stdin);
+        opc = getche();
+        printf("\n");
+        char aaa;
+
+        switch (opc)
+        {
+        case '1':
+            system("cls");
+            printf("\n\tQuantidade: %d", tamanhoLista(lis));
+            break;
+        case '2':
+            system("cls");
+            exibirLista(lis);
+            break;
+        case '3':
+            system("cls");
+            buscaPorProntuario(lis);
+            break;
+        case '4':
+            system("cls");
+            insereNaLista(lis);
+            break;
+        case '5':
+            system("cls");
+            excluiDaLista(lis);
+            break;
+        case '6':
+            system("cls");
+            break;
+        case '7':
+            system("cls");
+            salvaArquivo(lis);
+            break;
+        case '0':
+            menuPrincipal();
+            break;
+        default:
+            printf("\n\n\tOpção Invalida...");
+            break;
+        }
+        printf("\n\tNovo teste? [n/N = NEGATIVO]");
+        fflush(stdin);
+        opc = getche();
+    } while (opc != 'N' && opc != 'n');
 }
 
-//Busca Sequencial Ordenada - Nomes
-PONT buscaSeqOrd(LISTA *l, REGISTRO *ch)
+int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *user)
 {
-    PONT pos = l->inicio;
-    char *prontuario = ch->prontuario;
-    while (pos != NULL && (strcmp(pos->reg.prontuario, prontuario) < 0))
-        pos = pos->prox;
-    if (pos != NULL && (strcmp(pos->reg.prontuario, prontuario) == 0))
-        return pos;
-    return NULL;
+
+    int inicio = 0, fim = tamanho_vet - 1, meio;
+
+    while (inicio <= fim)
+    {
+        meio = (inicio + fim) / 2;
+        if (strcmp(vetor[meio].nomeUsuario, user) == 0)
+            return meio;
+        if (strcmp(vetor[meio].nomeUsuario, user) > 0)
+            fim = meio - 1;
+        else
+            inicio = meio + 1;
+    }
+    return -1;
 }
-//Função booleana para inserir um Novo Elemento na Lista Ordenada
+
+void login()
+{
+    system("color 9F");
+    REGISTRO reg;
+    REGISTRO *vetRegistros = lerArquivo();
+
+    printf("\n\tNOME DO USUÁRIO:");
+    fflush(stdin);
+    gets(reg.nomeUsuario);
+    printf("\n\tPRONTUARIO DO USUÁRIO:");
+    fflush(stdin);
+    gets(reg.prontuario);
+
+    int pos = buscaBinaria(vetRegistros, tamanhoArquivo(), reg.nomeUsuario);
+
+    if (pos != -1)
+    {
+        if (strcmp(vetRegistros[pos].prontuario, reg.prontuario) != 0)
+        {
+            system("mode con:cols=75 lines=10");
+            system("cls");
+            system("color c0");
+            printf("\n\n\tUSUÁRIO E/OU PRONTUÁRIO INVÁLIDO!\n\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color c0");
+        printf("\n\n\tUSUÁRIO E/OU PRONTUÁRIO INVÁLIDO!\n\n");
+        exit(EXIT_FAILURE);
+    }
+}
+
+int tamanhoArquivo()
+{
+	int quantRegistros;
+	FILE *arq;
+	arq = fopen("data/usuarios.dat", "r");
+	
+	fseek(arq, 0L, SEEK_END);
+    quantRegistros = ftell(arq) / sizeof(REGISTRO);
+    fclose(arq);
+    return quantRegistros;	
+}
+
+REGISTRO *lerArquivo()
+{
+    FILE *arq;
+    int nroDeRegistros, flag_legrava;
+    arq = fopen("data/usuarios.dat", "r");
+
+    if (arq == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
+    }
+
+    fseek(arq, 0L, SEEK_END);
+    
+    nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
+
+    REGISTRO *vet_registros;
+    vet_registros = (REGISTRO *)malloc(nroDeRegistros * sizeof(REGISTRO));
+
+    if (vet_registros == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tMalloc devolveu NULL!\n");
+        getch();
+        fclose(arq);
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(arq, 0, SEEK_SET);
+
+    flag_legrava = fread(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
+    if (flag_legrava != 1)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tERRO DE LEITURA DO ARQUIVO USUARIOS.DAT");
+        getch();
+        fclose(arq);
+        exit(EXIT_FAILURE);
+    }
+
+    quick_sort(vet_registros, 0, nroDeRegistros - 1);
+    fclose(arq);
+    return vet_registros;
+}
+
+void quick_sort(REGISTRO *vet_registros, int ini, int fim)
+{
+    int pivo;
+
+    if (ini < fim)
+    {
+        pivo = part(vet_registros, ini, fim);
+        quick_sort(vet_registros, ini, pivo - 1);
+        quick_sort(vet_registros, pivo + 1, fim);
+    }
+}
+
+void troca(REGISTRO vetor[], int i, int j)
+{
+    REGISTRO aux = vetor[i];
+    vetor[i] = vetor[j];
+    vetor[j] = aux;
+}
+
+int part(REGISTRO vetor[], int ini, int pivo)
+{
+    int i, p_maior = ini;
+    for (i = ini; i < pivo; i++)
+    {
+        if (strcmp(vetor[i].nomeUsuario, vetor[pivo].nomeUsuario) < 0)
+        {
+            troca(vetor, i, p_maior);
+            p_maior++;
+        }
+    }
+    troca(vetor, p_maior, pivo);
+    return p_maior;
+}
+
+void exibeArquivo(void)
+{
+    REGISTRO *arq = lerArquivo();
+    int i = 0;
+    printf("%d", quantRegistro());
+    for (; i < quantRegistro(); i++)
+    {
+        printf("\n%02d\t%-10s\t\t%-50s", i, arq[i].prontuario, arq[i].nomeUsuario);
+    }
+}
+
 bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
 {
-    char *ch = reg.prontuario;
     char *user = reg.nomeUsuario;
-    PONT ant,j, i;
-    i = buscaSequencialExc(l, ch, &ant);
-    j = buscaSequencialNome(l, user, &ant);
+
+    PONT ant, j, i;
+    i = buscaSequencialNome(l, user, &ant);
+
     if (i != NULL)
         return false;
     i = (PONT)malloc(sizeof(ELEMENTO));
@@ -74,437 +253,38 @@ bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
     }
     return true;
 }
-//Executando a Busca Sequencial para Organizar os Elementos
-PONT buscaSequencialNome(LISTA *l, char *user, PONT *ant)
+PONT buscaSequencialNome(LISTA *l, char *ch, PONT *ant)
 {
     *ant = NULL;
     PONT atual = l->inicio;
-    while ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, user)< 0))
+    while ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, ch) != 0))
     {
         *ant = atual;
         atual = atual->prox;
     }
-    if ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, user) == 0))
+    if ((atual != NULL) && (strcmp(atual->reg.nomeUsuario, ch) == 0))
         return atual;
     return NULL;
 }
-
-//Executando a Busca Sequencial para Excluir um Elemento
-PONT buscaSequencialExc(LISTA *l, char *ch, PONT *ant)
+PONT buscaSequencialPront(LISTA *l, char *pront, PONT *ant)
 {
     *ant = NULL;
     PONT atual = l->inicio;
-    while ((atual != NULL) && (strcmp(atual->reg.prontuario, ch) < 1))
+    while ((atual != NULL) && (strcmp(atual->reg.prontuario, pront) != 0))
     {
         *ant = atual;
         atual = atual->prox;
     }
-    if ((atual != NULL) && (strcmp(atual->reg.prontuario, ch) == 0))
+    if ((atual != NULL) && (strcmp(atual->reg.prontuario, pront) == 0))
+    {
         return atual;
+    }
+
     return NULL;
 }
-
-//Função booleana para excluir um Elemento especifico da Lista Ordenada
-bool excluirElemLista(LISTA *l, char *ch)
+void cadastroDefault(void)
 {
-    PONT ant, i;
-    i = buscaSequencialExc(l, ch, &ant);
-    if (i == NULL)
-        return false;
-    if (ant == NULL)
-        l->inicio = i->prox;
-    else
-        ant->prox = i->prox;
-    free(i);
-    return true;
-}
-
-//Reinicializar a Lista
-void reinicializarLista(LISTA *l)
-{
-    PONT apagar;
-    PONT end = l->inicio;
-    while (end != NULL)
-    {
-        apagar = end;
-        end = end->prox;
-        free(apagar);
-    }
-    l->inicio = NULL;
-}
-
-REGISTRO oqueBuscar()
-{
-    REGISTRO nbusca;
-    printf("\nDigite o prontuario para busca: ");
-    fflush(stdin);
-    gets(nbusca.prontuario);
-    return nbusca;
-}
-
-void pesquisaLista(LISTA *l)
-{
-    PONT ender;
-    REGISTRO elem;
-    elem = oqueBuscar();
-    ender = buscaSeqOrd(l, &elem);
-    if (ender == NULL)
-        printf("\n Prontuario [%s] nao encontrado!", elem.prontuario);
-    else
-        printf("\n Prontuario [%s] encontrada em [%p]", elem.prontuario, ender);
-}
-//Registrando novos dados na Lista
-REGISTRO oqueInserir()
-{
-
-    printf("\nNOME DO USUARIO      : ");
-    fflush(stdin);
-    gets(R.nomeUsuario);
-    printf("\nPRONTUARIO DO USUARIO: ");
-    fflush(stdin);
-    gets(R.prontuario);
-    return R;
-}
-//Insere elementos na Lista
-void insereNaLista(LISTA *l)
-{
-    REGISTRO elem;
-    elem = oqueInserir();
-
-    printf("\nVai inserir o usuario [%s] [%s]", elem.prontuario, elem.nomeUsuario);
-    getch();
-    if (inserirElemListaOrd(l, elem) == true)
-    {
-        printf("\n O prontuario [%s] foi inserido com sucesso.", elem.prontuario);
-    }
-    else
-        printf("\n O prontuario [%s] NAO foi inserida!", elem.prontuario);
-}
-//Armazena qual elemento o usuario deseja excluir
-REGISTRO oqueExcluir()
-{
-    REGISTRO nexclui;
-    printf("\nDigite o prontuario para excluir: ");
-    fflush(stdin);
-    gets(nexclui.prontuario);
-
-    printf("\nVai excluir o prontuario:%s ", nexclui.prontuario);
-    getch();
-    return nexclui;
-}
-
-void excluiDaLista(LISTA *l)
-{
-    REGISTRO chave;
-    chave = oqueExcluir();
-
-    printf("\nVai excluir o prontuario: %s ", chave.prontuario);
-    getch();
-    if (excluirElemLista(l, chave.prontuario) == true)
-        printf("\nO prontuario [%s] foi excluido com sucesso.", chave.prontuario);
-    else
-        printf("\nO prontuario [%s] NAO foi excluida!", chave.prontuario);
-}
-
-void TROCA(REGISTRO vetor[], int i, int j)
-{
-    REGISTRO aux = vetor[i];
-    vetor[i] = vetor[j];
-    vetor[j] = aux;
-}
-
-int part(REGISTRO vetor[], int ini, int pivo)
-{
-    int i, p_maior = ini;
-    for (i = ini; i < pivo; i++)
-    {
-        if (strcmp(vetor[i].prontuario, vetor[pivo].prontuario) < 0)
-        {
-            TROCA(vetor, i, p_maior);
-            p_maior++;
-        }
-    }
-    TROCA(vetor, p_maior, pivo);
-    return p_maior;
-}
-
-void quick_sort(REGISTRO *vet_registros, int ini, int fim)
-{
-    int pivo;
-
-    if (ini < fim)
-    {
-        pivo = part(vet_registros, ini, fim);
-        quick_sort(vet_registros, ini, pivo - 1);
-        quick_sort(vet_registros, pivo + 1, fim);
-    }
-}
-
-void carregarLista(LISTA *l)
-{
-    reinicializarLista(l);
-    int nroDeRegistros, flag_legrava;
-    arq = fopen("usuarios.dat", "r");
-
-    if (arq == NULL)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
-    }
-
-    fseek(arq, 0L, SEEK_END);
-    int size = ftell(arq);
-    nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
-
-    REGISTRO *vet_registros;
-    vet_registros = (REGISTRO *)malloc(nroDeRegistros * sizeof(REGISTRO));
-
-    if (vet_registros == NULL)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("malloc devolveu NULL!\n");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-
-    fseek(arq, 0, SEEK_SET);
-
-    flag_legrava = fread(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
-    if (flag_legrava != 1)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\nERRO DE LEITURA DO ARQUIVO USUARIOS.DAT");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-
-    quick_sort(vet_registros, 0, nroDeRegistros - 1);
-    fclose(arq);
-    arq = fopen("usuarios.dat", "w");
-    flag_legrava = fwrite(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
-    if (flag_legrava != 1)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\nERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-    fclose(arq);
-    int ac = 0;
-
-    for (; ac < nroDeRegistros; ac++)
-    {
-        inserirElemListaOrd(l, vet_registros[ac]);
-    }
-}
-
-REGISTRO *listaArray(LISTA *l)
-{
-    int nroDeRegistros, cont = 0;
-    nroDeRegistros = tamanhoLista(l);
-    REGISTRO vet[nroDeRegistros];
-    PONT end = l->inicio;
-    system("cls");
-    while (end != NULL)
-    {
-        vet[cont] = end->reg;
-        cont++;
-        end = end->prox;
-    }
-    return vet;
-}
-
-int salvaArquivo(LISTA *l)
-{
-    int flag_legrava;
-    REGISTRO *vet = listaArray(l);
-    arq = fopen("usuarios.dat", "w");
-    flag_legrava = fwrite(vet, tamanhoLista(l) * sizeof(REGISTRO), 1, arq);
-    if (flag_legrava != 1)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\nERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-    return flag_legrava;
-}
-
-//Menu Gerenciar Usuarios
-void gerenciarUsuarios()
-{
-    LISTA lis;
-    char opc;
-    inicializarLista(&lis);
-    carregarLista(&lis);
-    do
-    {
-        system("color 3F");
-        system("cls");
-        printf("\n       GERENCIAR USÚARIOS:  ");
-        printf("\n---------------------------------------");
-        printf("\n 1. Exibir tamanho da Lista");
-        printf("\n 2. Exibir Lista");
-        printf("\n 3. Buscar por Prontuario");
-        printf("\n 4. Inserir elemento na Lista");
-        printf("\n 5. Excluir elemento da Lista");
-        printf("\n 6. Reinicializa Lista");
-        printf("\n 7. Salvar Alterações no Arquivo");
-        printf("\n 0. Menu Principal");
-        printf("\n---------------------------------------");
-        printf("\n    Escolha: ");
-        fflush(stdin);
-        opc = getche();
-        printf("\n");
-        char aaa;
-
-        switch (opc)
-        {
-        case '1':
-            system("cls");
-            printf("\n    Tamanho da Lista = %d", tamanhoLista(&lis));
-            break;
-        case '2':
-            system("cls");
-            exibirLista(&lis);
-            break;
-        case '3':
-            system("cls");
-            pesquisaLista(&lis);
-            break;
-        case '4':
-            system("cls");
-            insereNaLista(&lis);
-            break;
-        case '5':
-            system("cls");
-            excluiDaLista(&lis);
-            break;
-        case '6':
-            reinicializarLista(&lis);
-            break;
-        case '7':
-            salvaArquivo(&lis);
-            break;
-        case '0':
-            menuPrincipal();
-            break;
-        default:
-            printf("\n\n    Opção Invalida...");
-            break;
-        }
-        printf("\n    Novo teste? [n/N = NEGATIVO]");
-        fflush(stdin);
-        opc = getche();
-    } while (opc != 'N' && opc != 'n');
-}
-
-int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *usuario)
-{
-
-    int inicio = 0, fim = tamanho_vet - 1, meio;
-
-    while (inicio <= fim)
-    {
-        meio = (inicio + fim) / 2;
-        if (strcmp(vetor[meio].prontuario, usuario) == 0)
-            return meio;
-        if (strcmp(vetor[meio].prontuario, usuario) > 0)
-            fim = meio - 1;
-        else
-            inicio = meio + 1;
-    }
-    return -1;
-}
-
-void login()
-{
-
-    system("color 9F");
-    REGISTRO usuario;
-
-    arq = fopen("usuarios.dat", "r");
-
-    if (arq == NULL)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
-        exit(EXIT_FAILURE);
-    }
-    else
-
-        fseek(arq, 0L, SEEK_END);
-    int size = ftell(arq), nroDeRegistros, flag_legrava;
-    nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
-
-    REGISTRO *vet_registros;
-    vet_registros = (REGISTRO *)malloc(nroDeRegistros * sizeof(REGISTRO));
-
-    if (vet_registros == NULL)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\n\tmalloc devolveu NULL!\n\n");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-
-    fseek(arq, 0, SEEK_SET);
-
-    flag_legrava = fread(vet_registros, nroDeRegistros * sizeof(REGISTRO), 1, arq);
-    if (flag_legrava != 1)
-    {
-        system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color 0c");
-        printf("\n\n\tERRO DE LEITURA DO ARQUIVO USUARIOS.DAT\n\n");
-        getch();
-        fclose(arq);
-        exit(EXIT_FAILURE);
-    }
-    quick_sort(vet_registros, 0, nroDeRegistros - 1);
-    fclose(arq);
-
-    printf("\nNOME DO USUARIO:");
-    fflush(stdin);
-    gets(usuario.nomeUsuario);
-    printf("\nPRONTUARIO DO USUARIO:");
-    fflush(stdin);
-    gets(usuario.prontuario);
-
-    int pos = buscaBinaria(vet_registros, nroDeRegistros, usuario.prontuario);
-    if (pos == -1)
-    {
-        if (strcmp(vet_registros[pos].nomeUsuario, usuario.nomeUsuario) != 0)
-            system("mode con:cols=75 lines=10");
-        system("cls");
-        system("color c0");
-        printf("\n\n\tUSUÁRIO E/OU PRONTUÁRIO INVÁLIDO!\n\n");
-        exit(EXIT_FAILURE);
-    }
-}
-
-void cadastro_default(void)
-{
-
+    FILE *arq;
     REGISTRO tab[62] = {
         {"ADRIANO RASPANTE SUARES", "SP3023231"},                    //00
         {"ALEXANDRE BELETTI FERREIRA", "SP226117"},                  //01
@@ -570,8 +350,193 @@ void cadastro_default(void)
         {"WILLIAM TAKAHIRO MARUYAMA", "SP233250"}                    //61
     };
 
-    arq = fopen("usuarios.dat", "w");
+    arq = fopen("data/usuarios.dat", "w");
     fwrite(tab, sizeof(tab), 1, arq);
 
     fclose(arq);
+}
+int quantRegistro(void)
+{
+    FILE *arq;
+    int nroDeRegistros, flag_legrava;
+    arq = fopen("data/usuarios.dat", "r");
+
+    if (arq == NULL)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
+    }
+
+    fseek(arq, 0L, SEEK_END);
+    int size = ftell(arq);
+    nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
+    return nroDeRegistros;
+}
+void carregaLista(LISTA *l)
+{
+    REGISTRO *arq = lerArquivo();
+    int i = 0;
+    for (; i < quantRegistro(); i++)
+    {
+        inserirElemListaOrd(l, arq[i]);
+    }
+}
+void exibirLista(LISTA *l)
+{
+    int cont = 0;
+    PONT end = l->inicio;
+    system("cls");
+    printf("\n\t#\tNOME\t\t\t\t\t\t\t\tPRONTUÁRIO");
+    printf("\n=================================================================================================");
+    while (end != NULL)
+    {
+        cont++;
+        printf("\n\t%02d\t%-50s\t\t%-10s", cont, end->reg.nomeUsuario, end->reg.prontuario);
+        end = end->prox;
+    }
+    printf("\n");
+}
+void inicializarLista(LISTA *l)
+{
+    l->inicio = NULL;
+    carregaLista(l);
+}
+
+int tamanhoLista(LISTA *l)
+{
+    PONT end = l->inicio;
+    int taml = 0;
+    while (end != NULL)
+    {
+        taml++;
+        end = end->prox;
+    }
+    return taml;
+}
+void buscaPorProntuario(LISTA *lis)
+{
+    char prontuario[11];
+    printf("\n\tDigite o prontuário que deseja PESQUISAR: ");
+    fflush(stdin);
+    gets(prontuario);
+    PONT p = buscaSequencialPront(lis, prontuario, &lis->inicio);
+    if (p != NULL)
+    {	
+        printf("\n\tNOME: %s\n", p->reg.nomeUsuario);
+        printf("\tPRONTUÁRIO: %s\n", p->reg.prontuario);
+    }
+    else
+        printf("\n\tUsuário [%s] NÃO localizado!\n", prontuario);
+}
+void insereNaLista(LISTA *l)
+{
+    REGISTRO elem;
+    elem = oqueInserir();
+	if(strcmp (elem.nomeUsuario,"") == 0 || strcmp (elem.prontuario, "") == 0){
+		printf("\n\tERRO ao inserir o prontuário!\n");
+		return; 
+	}
+    printf("\n\tVai inserir o usuário [%s] [%s]\n", elem.prontuario, elem.nomeUsuario);
+    getch();
+    if (inserirElemListaOrd(l, elem) == true)
+    {
+        printf("\n\tO prontuário [%s] foi inserido com sucesso.\n", elem.prontuario);
+    }
+    else
+        printf("\n\tERRO ao inserir o prontuário [%s]!\n", elem.prontuario);
+}
+
+REGISTRO oqueInserir()
+{
+    REGISTRO reg;
+    printf("\n\tNOME DO USUÁRIO      : ");
+    fflush(stdin);
+    gets(reg.nomeUsuario);
+    printf("\n\tPRONTUARIO DO USUÁRIO: ");
+    fflush(stdin);
+    gets(reg.prontuario);
+    return reg;
+}
+
+bool excluirElemLista(LISTA *lis, char *pront)
+{
+    PONT ant, i;
+    i = buscaSequencialPront(lis, pront, &ant);
+    if (i == NULL)
+        return false;
+    if (ant == NULL)
+        lis->inicio = i->prox;
+    else
+        ant->prox = i->prox;
+    free(i);
+    return true;
+    free(i);
+    return true;
+}
+
+void excluiDaLista(LISTA *l)
+{
+    REGISTRO elem;
+    elem = oqueExcluir();
+    if(strcmp (elem.prontuario, "") == 0){
+		printf("\n\tERRO ao excluir o prontuário!\n");
+		return; 
+	}
+    printf("\n\tVai excluir o usuário [%s]\n", elem.prontuario);
+    getch();
+    if (excluirElemLista(l, elem.prontuario) == true)
+    {
+        printf("\n\tO prontuário [%s] foi excluido com sucesso.\n", elem.prontuario);
+    }
+    else
+        printf("\n\tERRO ao excluir o prontuário [%s]!\n", elem.prontuario);
+}
+REGISTRO oqueExcluir()
+{
+    REGISTRO reg;
+    printf("\n\tDigite o Prontuário que deseja EXCLUIR:");
+    fflush(stdin);
+    gets(reg.prontuario);
+    return reg;
+}
+
+REGISTRO *convertToArray(LISTA *l)
+{
+    REGISTRO *vet;
+    vet = (REGISTRO *)malloc(tamanhoLista(l) * sizeof(REGISTRO));
+    PONT end = l->inicio;
+    int taml = 0;
+    while (end != NULL)
+    {
+        vet[taml] = end->reg;
+        taml++;
+        end = end->prox;
+    }
+    return vet;
+}
+
+int salvaArquivo(LISTA *l)
+{
+    FILE *arq;
+    int flag_legrava;
+    REGISTRO *vet = convertToArray(l);
+    
+    arq = fopen("data/usuarios.dat", "w");
+    flag_legrava = fwrite(vet, tamanhoLista(l) * sizeof(REGISTRO), 1, arq);
+    if (flag_legrava != 1)
+    {
+        system("mode con:cols=75 lines=10");
+        system("cls");
+        system("color 0c");
+        printf("\n\n\tERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
+        getch();
+        fclose(arq);
+        exit(EXIT_FAILURE);
+    }
+    else
+        printf("\n\n\tARQUIVO SALVO COM SUCESSO\n");
+
+    return flag_legrava;
 }

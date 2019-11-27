@@ -1,15 +1,15 @@
-# Project: Projeto
+# Project: PROJETO MERCADO
 # Makefile created by Dev-C++ 5.11
 
 CPP      = g++.exe
 CC       = gcc.exe
 WINDRES  = windres.exe
-OBJ      = main.o usuario.o gondola.o
-LINKOBJ  = main.o usuario.o gondola.o
+OBJ      = gondola.o main.o usuario.o
+LINKOBJ  = gondola.o main.o usuario.o
 LIBS     = -L"E:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -static-libgcc -m32
 INCS     = -I"E:/Dev-Cpp/MinGW64/include" -I"E:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"E:/Dev-Cpp/MinGW64/include" -I"E:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = Projeto.exe
+BIN      = "PROJETO MERCADO.exe"
 CXXFLAGS = $(CXXINCS) -m32
 CFLAGS   = $(INCS) -m32
 RM       = rm.exe -f
@@ -24,11 +24,11 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CC) $(LINKOBJ) -o $(BIN) $(LIBS)
 
+gondola.o: gondola.c
+	$(CC) -c gondola.c -o gondola.o $(CFLAGS)
+
 main.o: main.c
 	$(CC) -c main.c -o main.o $(CFLAGS)
 
 usuario.o: usuario.c
 	$(CC) -c usuario.c -o usuario.o $(CFLAGS)
-
-gondola.o: gondola.c
-	$(CC) -c gondola.c -o gondola.o $(CFLAGS)

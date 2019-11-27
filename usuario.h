@@ -1,8 +1,4 @@
-//Bibliotecas
 #include "common.h"
-
-//Definição do registro de usuarios
-typedef char TIPOCHAVE;
 
 typedef struct
 {
@@ -23,28 +19,28 @@ typedef struct
     PONT inicio;
 } LISTA;
 
-//Funções Busca Encadeada
-void menuPrincipal();
-void login();
-void gerenciarUsuarios();
-void inicializarLista(LISTA *l);
-void exibirLista(LISTA *l);
-void reinicializarLista(LISTA *l);
-void pesquisaLista(LISTA *l);
-void insereNaLista(LISTA *l);
-void excluiDaLista(LISTA *l);
-void carregarLista(LISTA *l);
-void cadastro_default();
-int tamanhoLista(LISTA *l);
-bool inserirElemListaOrd(LISTA *l, REGISTRO reg);
-bool excluirElemLista(LISTA *l, char *ch);
-void cadastro_default(void);
-int salvaArquivo(LISTA *l);
-int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *usuario);
-PONT buscaSequencialNome(LISTA *l, char *user, PONT *ant);
-PONT buscaSequencialExc(LISTA *l, char *ch, PONT *ant);
-PONT buscaSeqOrd(LISTA *l, REGISTRO *ch);
-REGISTRO oqueExcluir(void);
-REGISTRO oqueBuscar(void);
-REGISTRO oqueInserir(void);
+void cadastroDefault(void);
+void gerenciarUsuarios(LISTA *);
+REGISTRO *lerArquivo();
+void quick_sort(REGISTRO *, int, int);
+int part(REGISTRO[], int, int);
+void troca(REGISTRO[], int, int);
+int quantRegistro(void);
+void exibeArquivo(void);
+bool inserirElemListaOrd(LISTA *, REGISTRO);
+PONT buscaSequencialNome(LISTA *, char *, PONT *);
+PONT buscaSequencialPront(LISTA *, char *, PONT *);
+void inicializarLista(LISTA *);
+void carregaLista(LISTA *);
+void exibirLista(LISTA *);
+int tamanhoLista(LISTA *);
+void buscaPorProntuario(LISTA *);
+void insereNaLista(LISTA *);
+REGISTRO oqueInserir();
+REGISTRO * convertToArray(LISTA *);
+REGISTRO oqueExcluir ();
+void excluiDaLista(LISTA *);
+bool excluirElemLista(LISTA *, char *);
+int salvaArquivo(LISTA *);
+
 
