@@ -1,8 +1,11 @@
+//Bibliotecas
 #include "usuario.h"
 #include "gondola.h"
 
+//FUNÇÃO MENU PRINCIPAL
 int menuPrincipal();
 
+//MAIN
 int main()
 {
 
@@ -11,6 +14,7 @@ int main()
     return menuPrincipal();
 }
 
+//MENU PRNICIPAL
 int menuPrincipal()
 {
  
@@ -21,7 +25,7 @@ int menuPrincipal()
     inicializarLista(&lis);
     inicializarGondola(&gon);
     carregaGondula(&gon);
-    produtoDefault(&gon);
+    //produtoDefault(&gon);
     //cadastroDefault();
     char opc, opc2;
 

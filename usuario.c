@@ -1,6 +1,6 @@
 #include "common.h"
 #include "usuario.h"
-
+//MENU GERENCIAR USUARIOS
 void gerenciarUsuarios(LISTA *lis)
 {
     char opc;
@@ -50,6 +50,7 @@ void gerenciarUsuarios(LISTA *lis)
             break;
         case '6':
             system("cls");
+            reinicializarLista (lis);
             break;
         case '7':
             system("cls");
@@ -68,6 +69,7 @@ void gerenciarUsuarios(LISTA *lis)
     } while (opc != 'N' && opc != 'n');
 }
 
+//Busca binaria para realizar o login
 int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *user)
 {
 
@@ -86,6 +88,7 @@ int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *user)
     return -1;
 }
 
+//Funçao que realiza o login junto com a funçao binaria
 void login()
 {
     system("color 9F");
@@ -122,6 +125,7 @@ void login()
     }
 }
 
+//Funçao que le o tamanho do arquivo
 int tamanhoArquivo()
 {
 	int quantRegistros;
@@ -134,6 +138,7 @@ int tamanhoArquivo()
     return quantRegistros;	
 }
 
+//Lendo o arquivo e chamando a funçao quick para organiza-lo
 REGISTRO *lerArquivo()
 {
     FILE *arq;
@@ -185,6 +190,7 @@ REGISTRO *lerArquivo()
     return vet_registros;
 }
 
+//Quick para organizar o arquivo para realizar a busca binaria
 void quick_sort(REGISTRO *vet_registros, int ini, int fim)
 {
     int pivo;
@@ -197,13 +203,14 @@ void quick_sort(REGISTRO *vet_registros, int ini, int fim)
     }
 }
 
+//Parte 2 da funçao quick para organizar o arquivo para realizar a busca binaria
 void troca(REGISTRO vetor[], int i, int j)
 {
     REGISTRO aux = vetor[i];
     vetor[i] = vetor[j];
     vetor[j] = aux;
 }
-
+//Parte 1 da funçao quick para organizar o arquivo para realizar a busca binaria
 int part(REGISTRO vetor[], int ini, int pivo)
 {
     int i, p_maior = ini;
@@ -219,17 +226,22 @@ int part(REGISTRO vetor[], int ini, int pivo)
     return p_maior;
 }
 
-void exibeArquivo(void)
-{
-    REGISTRO *arq = lerArquivo();
-    int i = 0;
-    printf("%d", quantRegistro());
-    for (; i < quantRegistro(); i++)
-    {
-        printf("\n%02d\t%-10s\t\t%-50s", i, arq[i].prontuario, arq[i].nomeUsuario);
-    }
+//Reinicializar a Lista
+void reinicializarLista (LISTA *l) 
+{  
+    PONT apagar;
+	PONT end = l->inicio;    
+	while (end != NULL)      
+	{  
+		apagar 	= end;       
+		end 	= end->prox; 
+		free(apagar);        
+	}                        
+	l->inicio = NULL; 
+	printf("\n\n\tLista Reinicializada com sucesso!");       
 }
 
+//Função booleana para inserir um elemento na lista
 bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
 {
     char *user = reg.nomeUsuario;
@@ -253,6 +265,8 @@ bool inserirElemListaOrd(LISTA *l, REGISTRO reg)
     }
     return true;
 }
+
+//Busca por nome
 PONT buscaSequencialNome(LISTA *l, char *ch, PONT *ant)
 {
     *ant = NULL;
@@ -266,6 +280,8 @@ PONT buscaSequencialNome(LISTA *l, char *ch, PONT *ant)
         return atual;
     return NULL;
 }
+
+//Busca por prontuario
 PONT buscaSequencialPront(LISTA *l, char *pront, PONT *ant)
 {
     *ant = NULL;
@@ -282,6 +298,8 @@ PONT buscaSequencialPront(LISTA *l, char *pront, PONT *ant)
 
     return NULL;
 }
+
+//Cadastro Default 
 void cadastroDefault(void)
 {
     FILE *arq;
@@ -355,6 +373,8 @@ void cadastroDefault(void)
 
     fclose(arq);
 }
+
+//Funçao para avaliar quantos registros tem no arquivo
 int quantRegistro(void)
 {
     FILE *arq;
@@ -374,6 +394,8 @@ int quantRegistro(void)
     nroDeRegistros = ftell(arq) / sizeof(REGISTRO);
     return nroDeRegistros;
 }
+
+//Carregando a lista no programa
 void carregaLista(LISTA *l)
 {
     REGISTRO *arq = lerArquivo();
@@ -383,6 +405,8 @@ void carregaLista(LISTA *l)
         inserirElemListaOrd(l, arq[i]);
     }
 }
+
+//Exibindo a lista
 void exibirLista(LISTA *l)
 {
     int cont = 0;
@@ -398,12 +422,15 @@ void exibirLista(LISTA *l)
     }
     printf("\n");
 }
+
+//Inicializando a lista
 void inicializarLista(LISTA *l)
 {
     l->inicio = NULL;
     carregaLista(l);
 }
 
+//Tamanho da lista
 int tamanhoLista(LISTA *l)
 {
     PONT end = l->inicio;
@@ -415,13 +442,15 @@ int tamanhoLista(LISTA *l)
     }
     return taml;
 }
+
+//Busca por prontuario
 void buscaPorProntuario(LISTA *lis)
 {
     char prontuario[11];
     printf("\n\tDigite o prontuário que deseja PESQUISAR: ");
     fflush(stdin);
     gets(prontuario);
-    PONT p = buscaSequencialPront(lis, prontuario, &lis->inicio);
+    PONT p = buscaSequencialPront(lis, prontuario, lis->inicio);
     if (p != NULL)
     {	
         printf("\n\tNOME: %s\n", p->reg.nomeUsuario);
@@ -430,6 +459,8 @@ void buscaPorProntuario(LISTA *lis)
     else
         printf("\n\tUsuário [%s] NÃO localizado!\n", prontuario);
 }
+
+//Inserindo na lista
 void insereNaLista(LISTA *l)
 {
     REGISTRO elem;
@@ -448,6 +479,7 @@ void insereNaLista(LISTA *l)
         printf("\n\tERRO ao inserir o prontuário [%s]!\n", elem.prontuario);
 }
 
+//Escolher o que inserir
 REGISTRO oqueInserir()
 {
     REGISTRO reg;
@@ -460,6 +492,7 @@ REGISTRO oqueInserir()
     return reg;
 }
 
+//Função booleana para excluir um elemento da lista
 bool excluirElemLista(LISTA *lis, char *pront)
 {
     PONT ant, i;
@@ -476,6 +509,7 @@ bool excluirElemLista(LISTA *lis, char *pront)
     return true;
 }
 
+//Excluindo o elemento
 void excluiDaLista(LISTA *l)
 {
     REGISTRO elem;
@@ -493,6 +527,8 @@ void excluiDaLista(LISTA *l)
     else
         printf("\n\tERRO ao excluir o prontuário [%s]!\n", elem.prontuario);
 }
+
+//Definindo o que excluir
 REGISTRO oqueExcluir()
 {
     REGISTRO reg;
@@ -502,6 +538,7 @@ REGISTRO oqueExcluir()
     return reg;
 }
 
+//Transformando o arquivo em uma array na memoria
 REGISTRO *convertToArray(LISTA *l)
 {
     REGISTRO *vet;
@@ -517,6 +554,7 @@ REGISTRO *convertToArray(LISTA *l)
     return vet;
 }
 
+//salvando o arquivo
 int salvaArquivo(LISTA *l)
 {
     FILE *arq;

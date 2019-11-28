@@ -76,6 +76,7 @@ void abastecerGondolas(GONDOLA *gon)
     } while (opc != 'n' && opc != 'N');
 }
 
+//Tamanho da Pilha
 int tamanhoPilha(PILHA *p)
 {
     POINT end = p->topo;
@@ -88,10 +89,13 @@ int tamanhoPilha(PILHA *p)
     return tamp;
 }
 
+//Inicializando as pilhas
 void inicializarPilha(PILHA *p)
 {
     p->topo = NULL;
 }
+
+//Inicializando a gonola
 void inicializarGondola(GONDOLA *g)
 {
 	int i, quantPrat;
@@ -102,6 +106,7 @@ void inicializarGondola(GONDOLA *g)
 	}
 }
 
+//Informando se a gondola tem itens
 void gondolaVazia(GONDOLA *g)
 {
 	int i, quantPrat;
@@ -122,6 +127,8 @@ void gondolaVazia(GONDOLA *g)
 		printf("\n\n\tGôndola COM itens!");
 	}
 }
+
+//Informando se há itens nas prateleiras
 bool pilhaVazia(PILHA *p)
 {
 	bool i = false;
@@ -130,6 +137,7 @@ bool pilhaVazia(PILHA *p)
 	}
 	return i;
 }
+
 //Registrando novos dados na Pilha
 PRODUTO oqueInserirPilha()
 {
@@ -148,6 +156,8 @@ PRODUTO oqueInserirPilha()
     gets(rp.PRECO);
     return rp;
 }
+
+//Validando a inserção do item
 void insereNaPilha(PILHA *p)
 {
     PRODUTO elem;
@@ -157,6 +167,7 @@ void insereNaPilha(PILHA *p)
     else
         printf("\n\tERRO ao inserir o produto [%s]", elem.NOMEPROD);
 }
+
 //Inserir Itens na Prateleira Escolhida
 void insereNaGondola(GONDOLA *g)
 {
@@ -183,6 +194,7 @@ void insereNaGondola(GONDOLA *g)
     }
 }
 
+//Função booleana para inserir um item em uma das prateleiras
 bool inserirElemPilha(PILHA *p, PRODUTO regprod)
 {
     POINT novo = (POINT)malloc(sizeof(ELEMPROD));
@@ -206,6 +218,7 @@ void exibirQuantGondola(GONDOLA *g)
     }
     printf("\n\tTotal de itens: %d", quantTotal);
 }
+
 //Tirar Item da Prateleira Escolhida
 void excluirDaGondola(GONDOLA *g, PILHA *car)
 {
@@ -242,6 +255,7 @@ void excluirDaPilha(PILHA *p, PILHA *car)
     else
         printf("\n\tNão foi possivel inserir o item  [%s][%s][%s][%s] no carrinho.", regExcluido.NOMEPROD, regExcluido.DESC, regExcluido.PESO, regExcluido.PRECO);
 }
+
 //Função booleana para excluir um Elemento especifico da Pilha
 bool inserirNoCarrinho(PILHA *p, PILHA *car, PRODUTO *regprod)
 {
@@ -254,6 +268,7 @@ bool inserirNoCarrinho(PILHA *p, PILHA *car, PRODUTO *regprod)
     free(apagar);
     return true;
 }
+
 //Função booleana para excluir um Elemento especifico da Pilha
 bool excluirElemPilha(PILHA *p, PRODUTO *regprod)
 {
@@ -265,6 +280,7 @@ bool excluirElemPilha(PILHA *p, PRODUTO *regprod)
     free(apagar);
     return true;
 }
+
 //Exibindo a Pilha
 void exibirPilha(PILHA *p)
 {
@@ -278,6 +294,7 @@ void exibirPilha(PILHA *p)
     }
     printf("\n");
 }
+
 //ExibirGondola
 void exibirGondola(GONDOLA *g)
 {
@@ -289,6 +306,7 @@ void exibirGondola(GONDOLA *g)
         exibirPilha(&g->prateleira[i]);
     }
 }
+
 //Exibir itens no Carrinho
 void exibirCarrinho(PILHA *p)
 {
@@ -296,6 +314,7 @@ void exibirCarrinho(PILHA *p)
     exibirPilha(p);
     printf("\n\n\tTotal de itens no Carrinho: %d", tamanhoPilha(p));
 }
+
 //Reinicializar a Pilha
 void reinicializarPilha(PILHA *p)
 {
@@ -321,6 +340,7 @@ void reinicializarGondola(GONDOLA *g)
     printf("\n\tGôndula reinicializada");
 }
 
+//Salvando a Gonodla
 void salvarGondola(GONDOLA *g)
 {
 	int i, quantPrat;
@@ -333,6 +353,7 @@ void salvarGondola(GONDOLA *g)
     }
 }
 
+//Convertendo os arquivos em uma Arra
 PRODUTO * convertPilhaToArray(PILHA *l)
 {
 	PRODUTO *vet;
@@ -348,6 +369,7 @@ PRODUTO * convertPilhaToArray(PILHA *l)
     return vet;
 }
 
+//Salvando os arqiuvos
 void salvarArquivoProd(PILHA * p, char * fileName)
 {
 	FILE * arq;
@@ -369,6 +391,7 @@ void salvarArquivoProd(PILHA * p, char * fileName)
     fclose(arq);
 }
 
+//Lendo os arquivos das prateleiras 
 PRODUTO * lerArquivoPilha(char * file)
 {
 	FILE *arq;
@@ -421,6 +444,7 @@ PRODUTO * lerArquivoPilha(char * file)
     return vet;
 }
 
+//Carregando as pilhas
 void carregaPilha(PILHA *l, char * file)
 {
     PRODUTO *arq = lerArquivoPilha(file);
@@ -431,6 +455,7 @@ void carregaPilha(PILHA *l, char * file)
     }
 }
 
+//Carregando a gondola 
 void carregaGondula(GONDOLA * g)
 {
 	int i, quantPrat;
@@ -446,6 +471,7 @@ void carregaGondula(GONDOLA * g)
     }
 }
 
+//Quantidade de registros denrto dos arquivos de prateleiras
 int quantRegistroProduto(char * file)
 {
     FILE *arq;
@@ -466,6 +492,7 @@ int quantRegistroProduto(char * file)
     return nroDeRegistros;
 }
 
+//Produtos Default
 void produtoDefault(GONDOLA *g)
 {
     PRODUTO tab[30] = {

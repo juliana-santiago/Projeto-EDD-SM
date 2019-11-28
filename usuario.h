@@ -1,5 +1,7 @@
+//BIBLIOTECA
 #include "common.h"
 
+//STRUCTS ARQUIVO USUARIO;C
 typedef struct
 {
     char nomeUsuario[100];
@@ -19,6 +21,8 @@ typedef struct
     PONT inicio;
 } LISTA;
 
+
+//FUNÇOES ARQUIVO USUARIO.C
 void cadastroDefault(void);
 void gerenciarUsuarios(LISTA *);
 REGISTRO *lerArquivo();
@@ -42,5 +46,5 @@ REGISTRO oqueExcluir ();
 void excluiDaLista(LISTA *);
 bool excluirElemLista(LISTA *, char *);
 int salvaArquivo(LISTA *);
-
+void reinicializarLista (LISTA *l);
 

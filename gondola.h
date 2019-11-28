@@ -1,7 +1,7 @@
 //Bibliotecas
 #include "common.h"
 
-//Defini??o do registro de produtos
+//Definição do registro de produtos
 typedef struct
 {
     char NOMEPROD[100];
@@ -28,6 +28,7 @@ typedef struct
     PILHA prateleira[10];
 } GONDOLA;
 
+//Funções PRODUTOS
 int tamanhoPilha(PILHA *);
 void inicializarPilha(PILHA *);
 void inicializarGondola(GONDOLA *);
