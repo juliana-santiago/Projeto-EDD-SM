@@ -6,7 +6,7 @@ void gerenciarUsuarios(LISTA *lis)
     char opc;
     do
     {
-        system("color 3F");
+        system("color 5F");
         system("cls");
         printf("\n\t______________________________________");
         printf("\n\t|         GERENCIAR USUARIOS:        |");
@@ -91,7 +91,7 @@ int buscaBinaria(REGISTRO *vetor, int tamanho_vet, char *user)
 //Funçao que realiza o login junto com a funçao binaria
 void login()
 {
-    system("color 9F");
+    system("color 90");
     REGISTRO reg;
     REGISTRO *vetRegistros = lerArquivo();
 
@@ -119,7 +119,7 @@ void login()
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color c0");
+        system("color 04");
         printf("\n\n\tUSUÁRIO E/OU PRONTUÁRIO INVÁLIDO!\n\n");
         exit(EXIT_FAILURE);
     }
@@ -149,7 +149,7 @@ REGISTRO *lerArquivo()
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
     }
 
@@ -164,7 +164,7 @@ REGISTRO *lerArquivo()
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tMalloc devolveu NULL!\n");
         getch();
         fclose(arq);
@@ -178,7 +178,7 @@ REGISTRO *lerArquivo()
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tERRO DE LEITURA DO ARQUIVO USUARIOS.DAT");
         getch();
         fclose(arq);
@@ -385,7 +385,7 @@ int quantRegistro(void)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tARQUIVO USUARIOS.DAT INEXISTENTE!\n\n");
     }
 
@@ -411,7 +411,6 @@ void exibirLista(LISTA *l)
 {
     int cont = 0;
     PONT end = l->inicio;
-    system("cls");
     printf("\n\t#\tNOME\t\t\t\t\t\t\t\tPRONTUÁRIO");
     printf("\n=================================================================================================");
     while (end != NULL)
@@ -447,10 +446,11 @@ int tamanhoLista(LISTA *l)
 void buscaPorProntuario(LISTA *lis)
 {
     char prontuario[11];
+    PONT ant;
     printf("\n\tDigite o prontuário que deseja PESQUISAR: ");
     fflush(stdin);
     gets(prontuario);
-    PONT p = buscaSequencialPront(lis, prontuario, lis->inicio);
+    PONT p = buscaSequencialPront(lis, prontuario, &ant);
     if (p != NULL)
     {	
         printf("\n\tNOME: %s\n", p->reg.nomeUsuario);
@@ -567,7 +567,7 @@ int salvaArquivo(LISTA *l)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tERRO DE GRAVAÇÃO NO ARQUIVO USUARIOS.DAT");
         getch();
         fclose(arq);

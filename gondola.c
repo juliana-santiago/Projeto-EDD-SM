@@ -10,7 +10,7 @@ void abastecerGondolas(GONDOLA *gon)
     do
     {
         system("cls");
-        system("color 3F");
+        system("color 5F");
         printf("\n\t__________________________________________________________");
         printf("\n\t|                ABASTECER GONDOLAS                      |");
         printf("\n\t|========================================================|");
@@ -172,7 +172,6 @@ void insereNaPilha(PILHA *p)
 void insereNaGondola(GONDOLA *g)
 {
     int num = 0;
-    system("cls");
     printf("\n\tDeseja inserir o item em qual prateleira? ");
     fflush(stdin);
     scanf("%d", &num);
@@ -207,24 +206,21 @@ bool inserirElemPilha(PILHA *p, PRODUTO regprod)
 //Exibir Quantidade de Itens em cada Prateleira
 void exibirQuantGondola(GONDOLA *g)
 {
-    system("cls");
     int i, quant = 0, quantTotal = 0, quantPrat;
     quantPrat = sizeof(g->prateleira) / sizeof(g->prateleira[0]);
     for (i = 0; i < quantPrat; i++)
     {
         quant = tamanhoPilha(&g->prateleira[i]);
         quantTotal += quant;
-        printf("\n\tQuantidade de produtos na Prateleira[%02d]: %d", i + 1, tamanhoPilha(&g->prateleira[i]));
+        printf("\n\n\tQuantidade de produtos na Prateleira[%02d]: %d", i + 1, tamanhoPilha(&g->prateleira[i]));
     }
-    printf("\n\tTotal de itens: %d", quantTotal);
+    printf("\n\n\tTotal de itens: %d", quantTotal);
 }
 
 //Tirar Item da Prateleira Escolhida
 void excluirDaGondola(GONDOLA *g, PILHA *car)
 {
     int num = 0;
-    system("cls");
-
     printf("\n\tDeseja tirar um  item de qual prateleira? ");
     fflush(stdin);
     scanf("%d", &num);
@@ -380,7 +376,7 @@ void salvarArquivoProd(PILHA * p, char * fileName)
     if (flag_legrava != 1 && tamanhoPilha(p) != 0)
     {
         system("mode con:cols=75 lines=10");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tERRO DE GRAVAÇÃO NO ARQUIVO %s", fileName);
         getch();
         fclose(arq);
@@ -401,7 +397,7 @@ PRODUTO * lerArquivoPilha(char * file)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tARQUIVO %s INEXISTENTE!\n\n", file);
         fclose(arq);
         exit(EXIT_FAILURE);
@@ -418,7 +414,7 @@ PRODUTO * lerArquivoPilha(char * file)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tMalloc devolveu NULL!\n");
         getch();
         fclose(arq);
@@ -433,7 +429,7 @@ PRODUTO * lerArquivoPilha(char * file)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tERRO DE LEITURA DO ARQUIVO %s", file);
         getch();
         fclose(arq);
@@ -482,7 +478,7 @@ int quantRegistroProduto(char * file)
     {
         system("mode con:cols=75 lines=10");
         system("cls");
-        system("color 0c");
+        system("color 04");
         printf("\n\n\tARQUIVO %s INEXISTENTE!\n\n", file);
     }
 
